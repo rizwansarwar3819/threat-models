@@ -1,0 +1,26 @@
+{
+  "version": "2.6.2",
+  "summary": {
+    "title": "Scenario 3: Microservices Healthcare Application",
+    "owner": "BCSF24A038",
+    "description": "A microservices-based patient management system with OAuth 2.0 authentication, JWT tokens, and multiple internal services exposed via an API gateway.",
+    "id": 0
+  },
+  "detail": {
+    "contributors": [],
+    "diagrams": [
+      {
+        "id": 0,
+        "title": "Healthcare System DFD",
+        "diagramType": "STRIDE",
+        "placeholder": "New STRIDE diagram description",
+        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "version": "2.6.2",
+        "cells": []
+      }
+    ],
+    "diagramTop": 1,
+    "reviewer": "",
+    "threatTop": 0
+  }
+}
