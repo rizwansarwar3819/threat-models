@@ -33,8 +33,8 @@
             },
             "visible": true,
             "shape": "trust-boundary-box",
-            "id": "c9e69f08-229e-4f15-b0da-6c99f1c92063",
             "zIndex": -1,
+            "id": "c9e69f08-229e-4f15-b0da-6c99f1c92063",
             "data": {
               "type": "tm.BoundaryBox",
               "name": "Internal Services Boundary",
@@ -71,8 +71,8 @@
             },
             "visible": true,
             "shape": "trust-boundary-box",
-            "id": "a9926c87-f148-4f1f-a2f4-01e0729b4bec",
             "zIndex": -1,
+            "id": "a9926c87-f148-4f1f-a2f4-01e0729b4bec",
             "data": {
               "type": "tm.BoundaryBox",
               "name": "DMZ",
@@ -107,8 +107,8 @@
             },
             "visible": true,
             "shape": "trust-boundary-box",
-            "id": "f23118f3-6296-46ab-8562-9cd3dae79197",
             "zIndex": -1,
+            "id": "f23118f3-6296-46ab-8562-9cd3dae79197",
             "data": {
               "type": "tm.BoundaryBox",
               "name": "Public Internet",
@@ -139,8 +139,8 @@
             },
             "visible": true,
             "shape": "trust-boundary-box",
-            "id": "9bff5833-9fa1-44eb-8a43-07d73e8961f7",
             "zIndex": -1,
+            "id": "9bff5833-9fa1-44eb-8a43-07d73e8961f7",
             "data": {
               "type": "tm.BoundaryBox",
               "name": "Third-party\nProviders\n(SMS/Email)",
@@ -165,13 +165,14 @@
                 "text": "Patient Portal"
               },
               "body": {
-                "stroke": "#333333",
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               }
             },
             "visible": true,
             "shape": "actor",
+            "zIndex": 0,
             "ports": {
               "groups": {
                 "top": {
@@ -255,7 +256,6 @@
               ]
             },
             "id": "5d3c8255-ac76-4169-ad34-e91539dc0302",
-            "zIndex": 0,
             "data": {
               "type": "tm.Actor",
               "name": "Patient Portal",
@@ -263,9 +263,27 @@
               "isTrustBoundary": false,
               "outOfScope": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
               "providesAuthentication": false,
-              "threats": []
+              "threats": [
+                {
+                  "id": "71410ad6-a3ac-46af-abe6-fbc3ba36d0ec",
+                  "title": "Patient Portal Session Hijacking",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Spoofing",
+                  "description": "An attacker intercepts or steals a patient's active session cookie from the patient portal to hijack their authenticated session and access medical records without re-authentication.",
+                  "mitigation": "Use HTTPOnly and Secure cookie flags, implement session timeout, regenerate session tokens after login, enforce HTTPS per OWASP Top 10 A02, and use multi-factor authentication.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 8,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "spoofing": 1,
+                "repudiation": 0
+              }
             }
           },
           {
@@ -282,13 +300,14 @@
                 "text": "API\nGateway"
               },
               "body": {
-                "stroke": "#333333",
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               }
             },
             "visible": true,
             "shape": "process",
+            "zIndex": 1,
             "ports": {
               "groups": {
                 "top": {
@@ -372,7 +391,6 @@
               ]
             },
             "id": "00c787ee-e79d-4255-9524-fcc403ca1d56",
-            "zIndex": 1,
             "data": {
               "type": "tm.Process",
               "name": "API\nGateway",
@@ -380,12 +398,47 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
               "handlesCardPayment": false,
               "handlesGoodsOrServices": false,
               "isWebApplication": false,
               "privilegeLevel": "",
-              "threats": []
+              "threats": [
+                {
+                  "id": "a40ab44f-1733-4989-be80-81ecea3d192d",
+                  "title": "JWT Token Forgery",
+                  "status": "Open",
+                  "severity": "Critical",
+                  "type": "Spoofing",
+                  "description": "An attacker forges or replays a stolen JWT token to impersonate a legitimate patient and gain unauthorized access to medical records through the API gateway.",
+                  "mitigation": "Use short JWT expiry times, implement token blacklisting, validate JWT signatures using strong algorithms (RS256), and enforce token binding to client IP.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 1,
+                  "score": ""
+                },
+                {
+                  "id": "365d657e-2c89-4b05-bd71-baeb499d560e",
+                  "title": "DDoS Attack on API Gateway",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Denial of service",
+                  "description": "An attacker floods the API gateway with massive amounts of requests, overwhelming the system and making patient portal, medical records, and appointment services unavailable to legitimate users.",
+                  "mitigation": "Implement rate limiting, use Web Application Firewall (WAF), enable auto-scaling, apply OWASP Top 10 A05 security misconfiguration controls, and use DDoS protection services.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 7,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "spoofing": 1,
+                "tampering": 0,
+                "repudiation": 0,
+                "informationDisclosure": 0,
+                "denialOfService": 1,
+                "elevationOfPrivilege": 0
+              }
             }
           },
           {
@@ -786,181 +839,6 @@
             "target": {
               "cell": "dc987246-e919-496d-8f89-f4601f6ef3f3",
               "port": "84ef4063-90c9-4e73-ab45-e4f90c43d374"
-            },
-            "tools": {
-              "items": [
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead",
-                "boundary",
-                "button-remove",
-                "vertices",
-                "source-arrowhead",
-                "target-arrowhead"
-              ],
-              "name": null
             }
           },
           {
@@ -977,13 +855,14 @@
                 "text": "Identity\nService"
               },
               "body": {
-                "stroke": "#333333",
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               }
             },
             "visible": true,
             "shape": "process",
+            "zIndex": 11,
             "ports": {
               "groups": {
                 "top": {
@@ -1067,7 +946,6 @@
               ]
             },
             "id": "4ef4bb49-9a45-40ee-b701-ea6b4375f080",
-            "zIndex": 11,
             "data": {
               "type": "tm.Process",
               "name": "Identity\nService",
@@ -1075,12 +953,54 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
               "handlesCardPayment": false,
               "handlesGoodsOrServices": false,
               "isWebApplication": false,
               "privilegeLevel": "",
-              "threats": []
+              "threats": [
+                {
+                  "id": "0a3966c8-11ad-451d-85f4-d03d98bcad5f",
+                  "title": "OAuth Token Theft",
+                  "status": "Open",
+                  "severity": "Critical",
+                  "type": "Information disclosure",
+                  "description": "An attacker intercepts OAuth 2.0 access tokens during transmission between the identity service and API gateway, gaining unauthorized access to patient data and internal services.",
+                  "mitigation": "Enforce TLS 1.3 for all inter-service communication, use short-lived tokens, implement PKCE for OAuth flows, and monitor for unusual token usage patterns.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 2,
+                  "score": ""
+                },
+                {
+                  "id": "ab21644b-c783-493e-83cc-87f496d9cd0a",
+                  "title": "Brute Force on Identity Service",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Denial of service",
+                  "description": "An attacker repeatedly sends authentication requests to the identity service to exhaust its resources, preventing legitimate patients from logging in and accessing medical records or booking appointments.",
+                  "mitigation": "Implement rate limiting on authentication endpoints, use account lockout policies, deploy CAPTCHA after multiple failures, and monitor login attempts per NIST 800-53 AC-7.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 10,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "spoofing": 0,
+                "tampering": 0,
+                "repudiation": 0,
+                "informationDisclosure": 1,
+                "denialOfService": 1,
+                "elevationOfPrivilege": 0
+              }
+            },
+            "tools": {
+              "items": [
+                "boundary",
+                "button-remove"
+              ],
+              "name": null
             }
           },
           {
@@ -1097,13 +1017,14 @@
                 "text": "Medical\nRecords"
               },
               "body": {
-                "stroke": "#333333",
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               }
             },
             "visible": true,
             "shape": "process",
+            "zIndex": 12,
             "ports": {
               "groups": {
                 "top": {
@@ -1187,7 +1108,6 @@
               ]
             },
             "id": "dc987246-e919-496d-8f89-f4601f6ef3f3",
-            "zIndex": 12,
             "data": {
               "type": "tm.Process",
               "name": "Medical\nRecords",
@@ -1195,12 +1115,34 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
               "handlesCardPayment": false,
               "handlesGoodsOrServices": false,
               "isWebApplication": false,
               "privilegeLevel": "",
-              "threats": []
+              "threats": [
+                {
+                  "id": "e4c42e24-d9a1-45b1-addf-4c445d8e75b5",
+                  "title": "Unauthorized Patient Record Access",
+                  "status": "Open",
+                  "severity": "Critical",
+                  "type": "Elevation of privilege",
+                  "description": "An attacker exploits weak authorization checks in the medical records service to access other patients' confidential health records, violating HIPAA compliance requirements.",
+                  "mitigation": "Implement role-based access control (RBAC), enforce patient-level authorization checks, log all record access attempts, and comply with NIST 800-53 AC-3 access enforcement controls.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 3,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "spoofing": 0,
+                "tampering": 0,
+                "repudiation": 0,
+                "informationDisclosure": 0,
+                "denialOfService": 0,
+                "elevationOfPrivilege": 1
+              }
             }
           },
           {
@@ -1217,13 +1159,14 @@
                 "text": "Appointment\nService"
               },
               "body": {
-                "stroke": "#333333",
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               }
             },
             "visible": true,
             "shape": "process",
+            "zIndex": 13,
             "ports": {
               "groups": {
                 "top": {
@@ -1307,7 +1250,6 @@
               ]
             },
             "id": "9cb0c55e-ac74-44ea-9df1-6ead3bf1191a",
-            "zIndex": 13,
             "data": {
               "type": "tm.Process",
               "name": "Appointment\nService",
@@ -1315,12 +1257,34 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
               "handlesCardPayment": false,
               "handlesGoodsOrServices": false,
               "isWebApplication": false,
               "privilegeLevel": "",
-              "threats": []
+              "threats": [
+                {
+                  "id": "afe3db59-98d5-438a-a472-d631bbf7c575",
+                  "title": "Appointment Data Repudiation",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Repudiation",
+                  "description": "A patient or staff member denies booking or cancelling an appointment, and the system lacks sufficient audit trails to prove the action occurred, leading to scheduling disputes and potential patient harm.",
+                  "mitigation": "Implement comprehensive audit logging for all appointment actions with timestamps and user IDs, use digital signatures per NIST 800-53 AU-9, and store logs in a tamper-proof system.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 5,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "spoofing": 0,
+                "tampering": 0,
+                "repudiation": 1,
+                "informationDisclosure": 0,
+                "denialOfService": 0,
+                "elevationOfPrivilege": 0
+              }
             }
           },
           {
@@ -1337,16 +1301,19 @@
                 "text": "Patient Records DB"
               },
               "topLine": {
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               },
               "bottomLine": {
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               }
             },
             "visible": true,
             "shape": "store",
+            "zIndex": 14,
             "ports": {
               "groups": {
                 "top": {
@@ -1430,7 +1397,6 @@
               ]
             },
             "id": "969a528d-e65b-4c1b-adc7-19d62bc9e9bf",
-            "zIndex": 14,
             "data": {
               "type": "tm.Store",
               "name": "Patient Records DB",
@@ -1438,13 +1404,33 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
               "isALog": false,
               "isEncrypted": false,
               "isSigned": false,
               "storesCredentials": false,
               "storesInventory": false,
-              "threats": []
+              "threats": [
+                {
+                  "id": "abfa08e1-c830-4f9b-842d-56be25e0db6a",
+                  "title": "Medical Records Data Tampering",
+                  "status": "Open",
+                  "severity": "Critical",
+                  "type": "Tampering",
+                  "description": "An attacker with database access modifies patient medical records, altering diagnoses, prescriptions, or treatment history, potentially causing life-threatening medical errors.",
+                  "mitigation": "Implement database integrity checks, use write-ahead logging, enforce strict access controls per NIST 800-53 SI-7, encrypt data at rest, and maintain immutable audit logs of all record modifications.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 4,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "tampering": 1,
+                "repudiation": 0,
+                "informationDisclosure": 0,
+                "denialOfService": 0
+              }
             }
           },
           {
@@ -1461,13 +1447,14 @@
                 "text": "Notification\nService"
               },
               "body": {
-                "stroke": "#333333",
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               }
             },
             "visible": true,
             "shape": "process",
+            "zIndex": 15,
             "ports": {
               "groups": {
                 "top": {
@@ -1551,7 +1538,6 @@
               ]
             },
             "id": "26b322de-5ad3-4b80-908f-b51dfbd250c4",
-            "zIndex": 15,
             "data": {
               "type": "tm.Process",
               "name": "Notification\nService",
@@ -1559,12 +1545,47 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
               "handlesCardPayment": false,
               "handlesGoodsOrServices": false,
               "isWebApplication": false,
               "privilegeLevel": "",
-              "threats": []
+              "threats": [
+                {
+                  "id": "1ace1367-e86b-49b3-9966-b338273984b5",
+                  "title": "Patient Data Exposure via Notification",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Information disclosure",
+                  "description": "Sensitive patient information such as diagnosis details or appointment reasons is included in SMS or email notifications sent through third-party providers, exposing PHI to unauthorized parties.",
+                  "mitigation": "Minimize PHI in notifications, use generic messages without sensitive details, encrypt notification content, and ensure third-party providers are HIPAA compliant per ISO 27001 controls.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 6,
+                  "score": ""
+                },
+                {
+                  "id": "4eb752d7-c16f-4e3f-ad1d-ee62c1961167",
+                  "title": "Third-Party Provider Compromise",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Repudiation",
+                  "description": "A compromised third-party SMS or email provider sends fake appointment reminders to patients, and there is no way to verify the authenticity of messages sent through the provider.",
+                  "mitigation": "Implement message signing, use DKIM and SPF records for email authentication, monitor provider activity logs, and maintain contracts requiring ISO 27001 compliance from third-party providers.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 9,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "spoofing": 0,
+                "tampering": 0,
+                "repudiation": 1,
+                "informationDisclosure": 1,
+                "denialOfService": 0,
+                "elevationOfPrivilege": 0
+              }
             }
           },
           {
@@ -1618,6 +1639,6 @@
     ],
     "diagramTop": 1,
     "reviewer": "",
-    "threatTop": 0
+    "threatTop": 10
   }
 }
